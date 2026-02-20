@@ -1,0 +1,55 @@
+name: Build HTML to APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Cordova
+        run: npm install -g cordova
+
+      - name: Create Cordova Project
+        run: |
+          # Create the App
+          cordova create app com.lalitha.tailors "Lalitha Tailors"
+          
+          # Move your files into the App
+          rm -rf app/www/*
+          cp index.html app/www/
+          cp logo.png app/www/ || true
+          cp watermark.png app/www/ || true
+          
+          # Tell the app to use your logo as the App Icon
+          cd app
+          sed -i 's|</widget>|    <icon src="www/logo.png" />\n</widget>|' config.xml
+          
+          # Install the Native Android Sharing tool
+          cordova plugin add cordova-plugin-x-socialsharing
+          
+          # Build the APK
+          cordova platform add android
+          cordova build android
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LalithaTailors-APK
+          path: app/platforms/android/app/build/outputs/apk/debug/*.apk
