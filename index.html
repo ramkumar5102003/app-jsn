@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>లలిత శ్రీ టైలర్స్</title>
+    <script src="cordova.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700&display=swap');
+        
+        body { font-family: 'Noto Sans Telugu', sans-serif; background-color: #F5F5F5; margin: 0; padding: 15px; color: #212121; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        .header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .header img { max-height: 80px; }
+        .shop-name { color: #D32F2F; font-size: 24px; font-weight: bold; margin: 10px 0 5px 0; }
+        .shop-details { font-size: 14px; color: #555; margin: 0; }
+        
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .input-group input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        
+        .table-header { display: flex; font-weight: bold; padding-bottom: 10px; border-bottom: 2px solid #ccc; margin-bottom: 10px;}
+        .col-sel { width: 15%; text-align: center;}
+        .col-name { width: 45%; }
+        .col-qty, .col-price { width: 20%; text-align: center; }
+        
+        .item-row { display: flex; align-items: center; margin-bottom: 8px; }
+        .item-row input[type="number"] { width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
+        .item-row input:disabled { background-color: #eee; opacity: 0.5; }
+        
+        .btn-generate {
+            width: 100%; padding: 15px; background-color: #D32F2F; color: white;
+            border: none; border-radius: 8px; font-size: 18px; font-weight: bold;
+            margin-top: 20px; cursor: pointer;
+        }
+
+        #receipt-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000;
+        }
+        .receipt-container {
+            background: white; width: 90%; max-width: 400px; border-radius: 10px; overflow: hidden;
+            display: flex; flex-direction: column; max-height: 90vh;
+        }
+        
+        #receipt-content { background-color: #E1F5FE; padding: 20px; position: relative; color: #000; }
+        #receipt-content::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('watermark.png'); background-size: cover; background-position: center; opacity: 0.1; z-index: 0;
+        }
+        .receipt-inner { position: relative; z-index: 1; }
+        .receipt-inner hr { border: 1px dashed #777; }
+        .total-line { font-size: 20px; font-weight: bold; color: #D32F2F; text-align: right; }
+        
+        .modal-buttons { display: flex; padding: 10px; background: white; }
+        .modal-buttons button { flex: 1; padding: 12px; margin: 5px; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;}
+        .btn-close { background-color: #757575; color: white; }
+        .btn-share { background-color: #2E7D32; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        <div class="shop-name">లలిత శ్రీ టైలర్స్</div>
+        <p class="shop-details">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట<br>Ph: +91 95023 84443</p>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="custName" placeholder="కస్టమర్ పేరు (Name)">
+        <input type="tel" id="custMobile" placeholder="మొబైల్ (Mobile)">
+    </div>
+
+    <div class="table-header">
+        <div class="col-sel">✓</div>
+        <div class="col-name">ఐటమ్</div>
+        <div class="col-qty">సంఖ్య</div>
+        <div class="col-price">ధర</div>
+    </div>
+
+    <div id="items-list"></div>
+
+    <button class="btn-generate" onclick="generateBill()">బిల్లు తయారు చేయండి</button>
+</div>
+
+<div id="receipt-modal">
+    <div class="receipt-container">
+        <div id="receipt-content">
+            <div class="receipt-inner">
+                <div style="text-align: center;">
+                    <img src="logo.png" alt="Logo" style="max-height: 60px;" onerror="this.style.display='none'">
+                    <h2 style="color: #D32F2F; margin: 5px 0;">లలిత శ్రీ టైలర్స్</h2>
+                    <p style="margin:0; font-size: 12px;">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట<br>Ph: +91 95023 84443</p>
+                </div>
+                <hr>
+                <p style="margin: 5px 0;"><b>Name:</b> <span id="r-name"></span><br>
+                <b>Date:</b> <span id="r-date"></span></p>
+                <hr>
+                <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                    <thead><tr><th>ఐటమ్</th><th>Qty</th><th>Price</th></tr></thead>
+                    <tbody id="r-items"></tbody>
+                </table>
+                <hr>
+                <div class="total-line">TOTAL: Rs. <span id="r-total"></span></div>
+                <p style="text-align: center; font-style: italic; font-size: 14px; margin-top:10px;">Thank You! Come Again.</p>
+            </div>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-close" onclick="closeModal()">CLOSE</button>
+            <button class="btn-share" onclick="shareReceipt()">SHARE (షేర్)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const items = ["పెద్ద షర్ట్", "పెద్ద ఫ్యాంటు", "పెద్ద నిక్కర్", "కుర్తా", "స్కూల్ యూనిఫామ్", "చిన్న షర్టు", "చిన్న ఫ్యాంటు", "చిన్న నిక్కర్", "ఇతర ఆల్టరేషన్స్"];
+    const listDiv = document.getElementById('items-list');
+    
+    items.forEach((item, index) => {
+        listDiv.innerHTML += `
+            <div class="item-row">
+                <div class="col-sel"><input type="checkbox" id="chk${index}" onchange="toggleItem(${index})"></div>
+                <div class="col-name"><label for="chk${index}">${item}</label></div>
+                <div class="col-qty"><input type="number" id="qty${index}" value="1" disabled></div>
+                <div class="col-price"><input type="number" id="rate${index}" placeholder="0" disabled></div>
+            </div>`;
+    });
+
+    function toggleItem(index) {
+        const isChecked = document.getElementById(`chk${index}`).checked;
+        document.getElementById(`qty${index}`).disabled = !isChecked;
+        document.getElementById(`rate${index}`).disabled = !isChecked;
+    }
+
+    function generateBill() {
+        let total = 0;
+        let itemsHtml = "";
+        let hasItems = false;
+
+        items.forEach((item, index) => {
+            if (document.getElementById(`chk${index}`).checked) {
+                const q = parseFloat(document.getElementById(`qty${index}`).value) || 0;
+                const r = parseFloat(document.getElementById(`rate${index}`).value) || 0;
+                const amt = q * r;
+                if (amt > 0) {
+                    hasItems = true;
+                    total += amt;
+                    itemsHtml += `<tr><td>${item}</td><td>${q}</td><td>Rs.${amt}</td></tr>`;
+                }
+            }
+        });
+
+        if (!hasItems) { alert("దయచేసి ఐటమ్స్ ఎంచుకోండి."); return; }
+
+        document.getElementById('r-name').innerText = document.getElementById('custName').value || "-";
+        const now = new Date();
+        document.getElementById('r-date').innerText = now.toLocaleDateString('en-IN') + " " + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('r-items').innerHTML = itemsHtml;
+        document.getElementById('r-total').innerText = total;
+
+        document.getElementById('receipt-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('receipt-modal').style.display = 'none';
+    }
+
+    // Capture Image and Share Natively
+    async function shareReceipt() {
+        const receiptDiv = document.getElementById('receipt-content');
+        const canvas = await html2canvas(receiptDiv, { scale: 2, useCORS: true });
+        
+        // Convert to image string
+        const base64Image = canvas.toDataURL("image/png");
+
+        // Use Android Native Sharing via Cordova
+        if (window.plugins && window.plugins.socialsharing) {
+            window.plugins.socialsharing.share(
+                'మీ బిల్లు ఇక్కడ ఉంది. ధన్యవాదాలు!', // Text Message
+                'లలిత శ్రీ టైలర్స్ - బిల్లు',       // Title
+                base64Image,                       // The Image!
+                null                               // Link
+            );
+        } else {
+            alert("Sharing is preparing. If the menu doesn't open, long-press the receipt to save it.");
+        }
+    }
+</script>
+</body>
+  </html>
