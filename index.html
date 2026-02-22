@@ -9,74 +9,115 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700&display=swap');
         
-        body { font-family: 'Noto Sans Telugu', sans-serif; background-color: #F5F5F5; margin: 0; padding: 15px; color: #212121; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-        .header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
-        .header img { max-height: 80px; }
-        .shop-name { color: #D32F2F; font-size: 24px; font-weight: bold; margin: 10px 0 5px 0; }
-        .shop-details { font-size: 14px; color: #555; margin: 0; }
+        body { font-family: 'Noto Sans Telugu', sans-serif; background-color: #F5F5F5; margin: 0; padding: 10px; color: #212121; }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
         
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        .input-group input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        /* లోడింగ్ స్క్రీన్ */
+        #loader { position: fixed; top:0; left:0; width:100%; height:100%; background:white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
+        #loader img { max-width: 150px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* హెడర్ */
+        .header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; position: relative; }
+        .header img { max-height: 70px; }
+        .shop-name { color: #D32F2F; font-size: 22px; font-weight: bold; margin: 5px 0; }
+        .shop-details { font-size: 13px; color: #555; margin: 0; }
+        .btn-history { position: absolute; top: 0; right: 0; background: #1976D2; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; }
         
-        .table-header { display: flex; font-weight: bold; padding-bottom: 10px; border-bottom: 2px solid #ccc; margin-bottom: 10px;}
-        .col-sel { width: 15%; text-align: center;}
-        .col-name { width: 45%; }
-        .col-qty, .col-price { width: 20%; text-align: center; }
+        /* కస్టమర్ వివరాలు */
+        .input-group { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+        .input-group input { flex: 1; min-width: 45%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; font-family: 'Noto Sans Telugu', sans-serif;}
+        .photo-upload { width: 100%; border: 1px dashed #D32F2F; padding: 10px; text-align: center; border-radius: 5px; background: #FFF8F8; color: #D32F2F; font-weight: bold; cursor: pointer;}
         
-        .item-row { display: flex; align-items: center; margin-bottom: 8px; }
-        .item-row input[type="number"] { width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
+        /* ఆర్డర్ వివరాలు */
+        .stages-box { border: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #fafafa; margin-bottom: 15px; font-size: 14px; }
+        .stage-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .stage-row input[type="date"] { padding: 3px; border: 1px solid #aaa; border-radius: 3px; font-family: inherit;}
+        
+        /* ఐటమ్స్ పట్టిక */
+        .table-header { display: flex; font-weight: bold; padding-bottom: 5px; border-bottom: 2px solid #ccc; margin-bottom: 10px; font-size: 14px;}
+        .col-sel { width: 15%; text-align: center;} .col-name { width: 45%; } .col-qty, .col-price { width: 20%; text-align: center; }
+        .item-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; }
+        .item-row input[type="number"] { width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;}
         .item-row input:disabled { background-color: #eee; opacity: 0.5; }
         
-        .btn-generate {
-            width: 100%; padding: 15px; background-color: #D32F2F; color: white;
-            border: none; border-radius: 8px; font-size: 18px; font-weight: bold;
-            margin-top: 20px; cursor: pointer;
-        }
+        .btn-generate { width: 100%; padding: 15px; background-color: #D32F2F; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; margin-top: 10px; cursor: pointer; font-family: 'Noto Sans Telugu', sans-serif;}
 
-        #receipt-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000;
-        }
-        .receipt-container {
-            background: white; width: 90%; max-width: 400px; border-radius: 10px; overflow: hidden;
-            display: flex; flex-direction: column; max-height: 90vh;
-        }
+        /* పాప్ అప్ (Modal) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; width: 95%; max-width: 400px; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; max-height: 95vh; }
         
-        #receipt-content { background-color: #E1F5FE; padding: 20px; position: relative; color: #000; }
-        #receipt-content::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url('watermark.png'); background-size: cover; background-position: center; opacity: 0.1; z-index: 0;
-        }
+        /* బిల్లు డిజైన్ (Receipt) */
+        #receipt-content { background-color: #E1F5FE; padding: 15px; position: relative; color: #000; font-size: 14px; }
+        #receipt-content::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('watermark.png'); background-size: cover; background-position: center; opacity: 0.1; z-index: 0; }
         .receipt-inner { position: relative; z-index: 1; }
-        .receipt-inner hr { border: 1px dashed #777; }
-        .total-line { font-size: 20px; font-weight: bold; color: #D32F2F; text-align: right; }
+        .receipt-inner hr { border: 1px dashed #777; margin: 8px 0; }
+        .total-line { font-size: 18px; font-weight: bold; color: #D32F2F; text-align: right; margin-top: 5px;}
         
+        .cust-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .cust-photo-receipt { width: 60px; height: 60px; object-fit: cover; border: 2px solid #D32F2F; border-radius: 5px; display: none; }
+        
+        .r-stages { background: rgba(255,255,255,0.6); padding: 8px; border-radius: 5px; margin-top: 10px; border: 1px solid #ccc; }
+        .r-stages div { display: flex; justify-content: space-between; margin-bottom: 3px;}
+        .mark-yes { color: green; font-weight: bold; }
+        .mark-no { color: red; font-weight: bold; }
+
         .modal-buttons { display: flex; padding: 10px; background: white; }
-        .modal-buttons button { flex: 1; padding: 12px; margin: 5px; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;}
+        .modal-buttons button { flex: 1; padding: 12px; margin: 5px; border: none; border-radius: 5px; font-weight: bold; font-size: 14px; font-family: 'Noto Sans Telugu', sans-serif;}
         .btn-close { background-color: #757575; color: white; }
         .btn-share { background-color: #2E7D32; color: white; }
+        
+        /* చరిత్ర జాబితా */
+        .hist-item { border-bottom: 1px solid #ccc; padding: 10px; font-size: 14px; }
+        .hist-item strong { color: #D32F2F; }
     </style>
 </head>
 <body>
 
+<div id="loader">
+    <img src="logo.png" alt="లోడ్ అవుతోంది..." onerror="this.style.display='none'">
+    <h2 style="color: #D32F2F;">లలిత శ్రీ టైలర్స్</h2>
+</div>
+
 <div class="card">
     <div class="header">
-        <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        <button class="btn-history" onclick="showHistory()">పాత బిల్లులు</button>
+        <img src="logo.png" alt="లోగో" onerror="this.style.display='none'">
         <div class="shop-name">లలిత శ్రీ టైలర్స్</div>
-        <p class="shop-details">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట<br>Ph: +91 95023 84443</p>
+        <p class="shop-details">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట<br>ఫోన్: 95023 84443</p>
     </div>
 
     <div class="input-group">
-        <input type="text" id="custName" placeholder="కస్టమర్ పేరు (Name)">
-        <input type="tel" id="custMobile" placeholder="మొబైల్ (Mobile)">
+        <input type="text" id="custName" placeholder="కస్టమర్ పేరు">
+        <input type="tel" id="custMobile" placeholder="మొబైల్ నంబర్">
+    </div>
+    
+    <div class="input-group">
+        <label class="photo-upload">
+            📸 కస్టమర్ ఫోటో తీయండి
+            <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;" onchange="loadPhoto(event)">
+        </label>
+        <div id="photoFileName" style="font-size: 12px; color: green; width: 100%; text-align: center;"></div>
+    </div>
+
+    <div class="stages-box">
+        <strong>ఆర్డర్ వివరాలు:</strong>
+        <div class="stage-row" style="margin-top: 8px;">
+            <label>1. బుక్ చేసిన తేదీ:</label>
+            <input type="date" id="dateBooked">
+        </div>
+        <div class="stage-row">
+            <label><input type="checkbox" id="chkPaid"> 2. డబ్బులు చెల్లించారు</label>
+            <input type="date" id="datePaid">
+        </div>
+        <div class="stage-row">
+            <label><input type="checkbox" id="chkDelivered"> 3. డెలివరీ చేయబడింది</label>
+            <input type="date" id="dateDelivered">
+        </div>
     </div>
 
     <div class="table-header">
-        <div class="col-sel">✓</div>
-        <div class="col-name">ఐటమ్</div>
-        <div class="col-qty">సంఖ్య</div>
-        <div class="col-price">ధర</div>
+        <div class="col-sel">✓</div><div class="col-name">ఐటమ్</div><div class="col-qty">సంఖ్య</div><div class="col-price">ధర</div>
     </div>
 
     <div id="items-list"></div>
@@ -84,39 +125,76 @@
     <button class="btn-generate" onclick="generateBill()">బిల్లు తయారు చేయండి</button>
 </div>
 
-<div id="receipt-modal">
-    <div class="receipt-container">
+<div id="receipt-modal" class="modal">
+    <div class="modal-content">
         <div id="receipt-content">
             <div class="receipt-inner">
                 <div style="text-align: center;">
-                    <img src="logo.png" alt="Logo" style="max-height: 60px;" onerror="this.style.display='none'">
-                    <h2 style="color: #D32F2F; margin: 5px 0;">లలిత శ్రీ టైలర్స్</h2>
-                    <p style="margin:0; font-size: 12px;">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట<br>Ph: +91 95023 84443</p>
+                    <h2 style="color: #D32F2F; margin: 0;">లలిత శ్రీ టైలర్స్</h2>
+                    <p style="margin:0; font-size: 11px;">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట | ఫోన్: 95023 84443</p>
                 </div>
                 <hr>
-                <p style="margin: 5px 0;"><b>Name:</b> <span id="r-name"></span><br>
-                <b>Date:</b> <span id="r-date"></span></p>
+                
+                <div class="cust-header">
+                    <div style="flex:1;">
+                        <b>బిల్లు నంబర్:</b> <span id="r-serial" style="color:#D32F2F;"></span><br>
+                        <b>తేదీ:</b> <span id="r-date"></span><br>
+                        <b>పేరు:</b> <span id="r-name"></span><br>
+                        <b>మొబైల్:</b> <span id="r-mobile"></span>
+                    </div>
+                    <img id="r-photo" class="cust-photo-receipt">
+                </div>
+                
                 <hr>
-                <table style="width: 100%; text-align: left; border-collapse: collapse;">
-                    <thead><tr><th>ఐటమ్</th><th>Qty</th><th>Price</th></tr></thead>
+                <table style="width: 100%; text-align: left; border-collapse: collapse; font-size: 13px;">
+                    <thead><tr><th>ఐటమ్</th><th>సంఖ్య</th><th>ధర</th></tr></thead>
                     <tbody id="r-items"></tbody>
                 </table>
                 <hr>
-                <div class="total-line">TOTAL: Rs. <span id="r-total"></span></div>
-                <p style="text-align: center; font-style: italic; font-size: 14px; margin-top:10px;">Thank You! Come Again.</p>
+                <div class="total-line">మొత్తం: రూ. <span id="r-total"></span></div>
+                
+                <div class="r-stages">
+                    <div><span><b>బుక్ చేసిన తేదీ:</b> <span id="r-s-booked"></span></span> <span class="mark-yes">✓</span></div>
+                    <div><span><b>డబ్బులు చెల్లించారు:</b> <span id="r-s-paid"></span></span> <span id="r-m-paid"></span></div>
+                    <div><span><b>డెలివరీ చేయబడింది:</b> <span id="r-s-del"></span></span> <span id="r-m-del"></span></div>
+                </div>
+                
+                <p style="text-align: center; font-style: italic; font-size: 12px; margin-top:10px;">ధన్యవాదాలు! మళ్ళీ రండి.</p>
             </div>
         </div>
         <div class="modal-buttons">
-            <button class="btn-close" onclick="closeModal()">CLOSE</button>
-            <button class="btn-share" onclick="shareReceipt()">SHARE (షేర్)</button>
+            <button class="btn-close" onclick="closeModal('receipt-modal')">మూసివేయు</button>
+            <button class="btn-share" onclick="shareReceipt()">షేర్ చేయండి</button>
         </div>
     </div>
 </div>
 
+<div id="history-modal" class="modal">
+    <div class="modal-content" style="background: white; padding: 15px;">
+        <h3 style="color: #D32F2F; margin-top: 0;">పాత బిల్లులు</h3>
+        <div id="history-list" style="overflow-y: auto; flex: 1; max-height: 60vh;"></div>
+        <button class="btn-close" style="width: 100%; padding: 15px; margin-top: 10px;" onclick="closeModal('history-modal')">మూసివేయు</button>
+    </div>
+</div>
+
 <script>
+    // యాప్ ఓపెన్ అయినప్పుడు లోడింగ్ స్క్రీన్ తీసివేయడం
+    window.onload = () => {
+        setTimeout(() => {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+        }, 1500);
+        
+        // ఈ రోజు తేదీని డిఫాల్ట్ గా సెట్ చేయడం
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('dateBooked').value = today;
+    };
+
     const items = ["పెద్ద షర్ట్", "పెద్ద ఫ్యాంటు", "పెద్ద నిక్కర్", "కుర్తా", "స్కూల్ యూనిఫామ్", "చిన్న షర్టు", "చిన్న ఫ్యాంటు", "చిన్న నిక్కర్", "ఇతర ఆల్టరేషన్స్"];
     const listDiv = document.getElementById('items-list');
+    let currentPhotoBase64 = "";
     
+    // ఐటమ్స్ లిస్ట్ సృష్టించడం
     items.forEach((item, index) => {
         listDiv.innerHTML += `
             <div class="item-row">
@@ -133,10 +211,19 @@
         document.getElementById(`rate${index}`).disabled = !isChecked;
     }
 
+    // ఫోటో లోడ్ చేయడం
+    function loadPhoto(event) {
+        const file = event.target.files[0];
+        if (file) {
+            document.getElementById('photoFileName').innerText = "✓ ఫోటో యాడ్ చేయబడింది!";
+            const reader = new FileReader();
+            reader.onload = function(e) { currentPhotoBase64 = e.target.result; }
+            reader.readAsDataURL(file);
+        }
+    }
+
     function generateBill() {
-        let total = 0;
-        let itemsHtml = "";
-        let hasItems = false;
+        let total = 0; let itemsHtml = ""; let hasItems = false;
 
         items.forEach((item, index) => {
             if (document.getElementById(`chk${index}`).checked) {
@@ -144,48 +231,136 @@
                 const r = parseFloat(document.getElementById(`rate${index}`).value) || 0;
                 const amt = q * r;
                 if (amt > 0) {
-                    hasItems = true;
-                    total += amt;
-                    itemsHtml += `<tr><td>${item}</td><td>${q}</td><td>Rs.${amt}</td></tr>`;
+                    hasItems = true; total += amt;
+                    itemsHtml += `<tr><td>${item}</td><td>${q}</td><td>రూ.${amt}</td></tr>`;
                 }
             }
         });
 
-        if (!hasItems) { alert("దయచేసి ఐటమ్స్ ఎంచుకోండి."); return; }
+        if (!hasItems) { alert("దయచేసి కనీసం ఒక ఐటమ్ ఎంచుకోండి."); return; }
 
-        document.getElementById('r-name').innerText = document.getElementById('custName').value || "-";
+        // బిల్లు నంబర్ మరియు ప్రాథమిక వివరాలు
+        const serial = "బిల్లు-" + Date.now().toString().slice(-6);
+        const name = document.getElementById('custName').value || "-";
+        const mobile = document.getElementById('custMobile').value || "-";
+        
+        document.getElementById('r-serial').innerText = serial;
+        document.getElementById('r-name').innerText = name;
+        document.getElementById('r-mobile').innerText = mobile;
+        
         const now = new Date();
+        // తేదీ మరియు సమయం ఫార్మాట్
         document.getElementById('r-date').innerText = now.toLocaleDateString('en-IN') + " " + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+        
+        // కస్టమర్ ఫోటో రశీదులో చూపడం
+        const photoImg = document.getElementById('r-photo');
+        if (currentPhotoBase64) {
+            photoImg.src = currentPhotoBase64;
+            photoImg.style.display = 'block';
+        } else {
+            photoImg.style.display = 'none';
+        }
+
         document.getElementById('r-items').innerHTML = itemsHtml;
         document.getElementById('r-total').innerText = total;
+
+        // ఆర్డర్ స్టేటస్ వివరాలు
+        document.getElementById('r-s-booked').innerText = formatDate(document.getElementById('dateBooked').value);
+        
+        const isPaid = document.getElementById('chkPaid').checked;
+        document.getElementById('r-s-paid').innerText = isPaid ? formatDate(document.getElementById('datePaid').value) : "పెండింగ్";
+        document.getElementById('r-m-paid').className = isPaid ? "mark-yes" : "mark-no";
+        document.getElementById('r-m-paid').innerText = isPaid ? "✓" : "×";
+
+        const isDel = document.getElementById('chkDelivered').checked;
+        document.getElementById('r-s-del').innerText = isDel ? formatDate(document.getElementById('dateDelivered').value) : "పెండింగ్";
+        document.getElementById('r-m-del').className = isDel ? "mark-yes" : "mark-no";
+        document.getElementById('r-m-del').innerText = isDel ? "✓" : "×";
+
+        // పాత బిల్లుల్లో సేవ్ చేయడం
+        saveToHistory(serial, name, total);
 
         document.getElementById('receipt-modal').style.display = 'flex';
     }
 
-    function closeModal() {
-        document.getElementById('receipt-modal').style.display = 'none';
+    function formatDate(dateStr) {
+        if(!dateStr) return "";
+        const p = dateStr.split('-');
+        return `${p[2]}-${p[1]}-${p[0]}`;
     }
 
-    // Capture Image and Share Natively
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+        if(id === 'receipt-modal') resetForm();
+    }
+
+    function resetForm() {
+        document.getElementById('custName').value = "";
+        document.getElementById('custMobile').value = "";
+        document.getElementById('chkPaid').checked = false;
+        document.getElementById('chkDelivered').checked = false;
+        document.getElementById('datePaid').value = "";
+        document.getElementById('dateDelivered').value = "";
+        document.getElementById('photoInput').value = "";
+        document.getElementById('photoFileName').innerText = "";
+        currentPhotoBase64 = "";
+        
+        items.forEach((_, i) => {
+            document.getElementById(`chk${i}`).checked = false;
+            toggleItem(i);
+            document.getElementById(`rate${i}`).value = "";
+            document.getElementById(`qty${i}`).value = "1";
+        });
+    }
+
     async function shareReceipt() {
+        // షేర్ చేయడానికి ముందు అలర్ట్
+        alert("గమనిక:\n\nదశ 1: ముందుగా ఈ బిల్లుని మీ ఫోన్ గ్యాలరీ లేదా డ్రైవ్ లో సేవ్ చేయండి.\nదశ 2: ఆ తర్వాత కస్టమర్ కి WhatsApp లో షేర్ చేయండి.");
+
         const receiptDiv = document.getElementById('receipt-content');
         const canvas = await html2canvas(receiptDiv, { scale: 2, useCORS: true });
-        
-        // Convert to image string
         const base64Image = canvas.toDataURL("image/png");
 
-        // Use Android Native Sharing via Cordova
         if (window.plugins && window.plugins.socialsharing) {
-            window.plugins.socialsharing.share(
-                'మీ బిల్లు ఇక్కడ ఉంది. ధన్యవాదాలు!', // Text Message
-                'లలిత శ్రీ టైలర్స్ - బిల్లు',       // Title
-                base64Image,                       // The Image!
-                null                               // Link
-            );
+            window.plugins.socialsharing.share('మీ బిల్లు ఇక్కడ ఉంది. ధన్యవాదాలు!', 'లలిత శ్రీ టైలర్స్ - బిల్లు', base64Image, null);
         } else {
-            alert("Sharing is preparing. If the menu doesn't open, long-press the receipt to save it.");
+            // వెబ్ బ్రౌజర్ ఫాల్-బ్యాక్
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'bill.png', { type: 'image/png' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: 'బిల్లు', text: 'మీ బిల్లు ఇక్కడ ఉంది' });
+                }
+            });
         }
+    }
+
+    // --- పాత బిల్లులు (HISTORY SYSTEM) ---
+    function saveToHistory(serial, name, total) {
+        let history = JSON.parse(localStorage.getItem("tailorHistory")) || [];
+        const date = new Date().toLocaleDateString('en-IN');
+        
+        history.unshift({ serial, name, total, date });
+        // మెమరీ కోసం కేవలం 50 బిల్లులు మాత్రమే ఉంచుతుంది
+        if (history.length > 50) history.pop();
+        localStorage.setItem("tailorHistory", JSON.stringify(history));
+    }
+
+    function showHistory() {
+        const list = document.getElementById('history-list');
+        let history = JSON.parse(localStorage.getItem("tailorHistory")) || [];
+        
+        if (history.length === 0) {
+            list.innerHTML = "<p>పాత బిల్లులు ఏమీ లేవు.</p>";
+        } else {
+            list.innerHTML = history.map(h => 
+                `<div class="hist-item">
+                    <strong>${h.date}</strong> | ${h.serial} <br>
+                    పేరు: ${h.name} | <b>రూ. ${h.total}</b>
+                </div>`
+            ).join('');
+        }
+        document.getElementById('history-modal').style.display = 'flex';
     }
 </script>
 </body>
-  </html>
+            </html>
