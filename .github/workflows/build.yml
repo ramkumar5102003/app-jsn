@@ -28,23 +28,20 @@ jobs:
 
       - name: Create Cordova Project
         run: |
-          # Create the App
           cordova create app com.lalitha.tailors "Lalitha Tailors"
           
-          # Move your files into the App
           rm -rf app/www/*
           cp index.html app/www/
           cp logo.png app/www/ || true
           cp watermark.png app/www/ || true
           
-          # Tell the app to use your logo as the App Icon
+          # ఐకాన్ మరియు లోడింగ్ (Splash Screen) సెట్టింగ్స్ యాడ్ చేయడం
           cd app
-          sed -i 's|</widget>|    <icon src="www/logo.png" />\n</widget>|' config.xml
+          sed -i 's|</widget>|    <icon src="www/logo.png" />\n    <preference name="SplashScreen" value="screen" />\n    <preference name="SplashScreenDelay" value="3000" />\n    <preference name="SplashMaintainAspectRatio" value="true" />\n</widget>|' config.xml
           
-          # Install the Native Android Sharing tool
           cordova plugin add cordova-plugin-x-socialsharing
+          cordova plugin add cordova-plugin-splashscreen
           
-          # Build the APK
           cordova platform add android
           cordova build android
 
