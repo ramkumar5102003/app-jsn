@@ -17,16 +17,27 @@
         #loader img { max-width: 150px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
+        /* లాక్ స్క్రీన్ (Lock Screen) */
+        #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#D32F2F; z-index: 9998; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px;}
+        .lock-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 85%; max-width: 350px; color: #212121;}
+        .lock-box input { width: 100%; padding: 12px; font-size: 20px; text-align: center; border: 2px solid #ccc; border-radius: 8px; margin-bottom: 15px; letter-spacing: 5px; font-weight: bold;}
+        .btn-unlock { width: 100%; padding: 12px; background: #2E7D32; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; font-family: 'Noto Sans Telugu', sans-serif;}
+
         /* హెడర్ */
         .header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; position: relative; }
         .header img { max-height: 70px; }
         .shop-name { color: #D32F2F; font-size: 22px; font-weight: bold; margin: 5px 0; }
         .shop-details { font-size: 13px; color: #555; margin: 0; }
-        .btn-history { position: absolute; top: 0; right: 0; background: #1976D2; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        
+        .header-buttons { position: absolute; top: 0; right: 0; display: flex; gap: 5px; }
+        .btn-history { background: #1976D2; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; font-family: 'Noto Sans Telugu', sans-serif;}
+        .btn-lock-change { background: #F57C00; }
         
         /* కస్టమర్ వివరాలు */
         .input-group { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
         .input-group input { flex: 1; min-width: 45%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; font-family: 'Noto Sans Telugu', sans-serif;}
+        .full-width { min-width: 100% !important; border: 2px solid #1976D2 !important;}
+        
         .photo-upload { width: 100%; border: 1px dashed #D32F2F; padding: 10px; text-align: center; border-radius: 5px; background: #FFF8F8; color: #D32F2F; font-weight: bold; cursor: pointer;}
         
         /* ఆర్డర్ వివరాలు */
@@ -38,10 +49,14 @@
         .table-header { display: flex; font-weight: bold; padding-bottom: 5px; border-bottom: 2px solid #ccc; margin-bottom: 10px; font-size: 14px;}
         .col-sel { width: 15%; text-align: center;} .col-name { width: 45%; } .col-qty, .col-price { width: 20%; text-align: center; }
         .item-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; }
-        .item-row input[type="number"] { width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;}
+        .item-row input[type="number"], .item-row input[type="text"], .item-row input[type="password"] { width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;}
+        .item-row input[type="text"] { text-align: left; width: 95%; }
         .item-row input:disabled { background-color: #eee; opacity: 0.5; }
         
-        .btn-generate { width: 100%; padding: 15px; background-color: #D32F2F; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; margin-top: 10px; cursor: pointer; font-family: 'Noto Sans Telugu', sans-serif;}
+        /* కొత్త ఐటమ్ బటన్ */
+        .btn-add-custom { width: 100%; padding: 10px; background-color: #E3F2FD; color: #1976D2; border: 2px dashed #1976D2; border-radius: 8px; font-size: 15px; font-weight: bold; margin-bottom: 15px; cursor: pointer; font-family: inherit;}
+        
+        .btn-generate { width: 100%; padding: 15px; background-color: #D32F2F; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; margin-top: 5px; cursor: pointer; font-family: 'Noto Sans Telugu', sans-serif;}
 
         /* పాప్ అప్ (Modal) */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
@@ -49,7 +64,7 @@
         
         /* బిల్లు డిజైన్ (Receipt) */
         #receipt-content { background-color: #E1F5FE; padding: 15px; position: relative; color: #000; font-size: 14px; }
-        #receipt-content::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('watermark.png'); background-size: cover; background-position: center; opacity: 0.1; z-index: 0; }
+        #receipt-content::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('./watermark.png'); background-size: cover; background-position: center; opacity: 0.1; z-index: 0; }
         .receipt-inner { position: relative; z-index: 1; }
         .receipt-inner hr { border: 1px dashed #777; margin: 8px 0; }
         .total-line { font-size: 18px; font-weight: bold; color: #D32F2F; text-align: right; margin-top: 5px;}
@@ -58,14 +73,18 @@
         .cust-photo-receipt { width: 60px; height: 60px; object-fit: cover; border: 2px solid #D32F2F; border-radius: 5px; display: none; }
         
         .r-stages { background: rgba(255,255,255,0.6); padding: 8px; border-radius: 5px; margin-top: 10px; border: 1px solid #ccc; }
-        .r-stages div { display: flex; justify-content: space-between; margin-bottom: 3px;}
-        .mark-yes { color: green; font-weight: bold; }
-        .mark-no { color: red; font-weight: bold; }
+        .r-stages div { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;}
+        
+        /* రౌండ్ కలర్ మార్కులు (✓ మరియు ×) */
+        .mark-yes, .mark-no { display: inline-flex; justify-content: center; align-items: center; width: 22px; height: 22px; border-radius: 50%; color: white; font-weight: bold; font-size: 14px; }
+        .mark-yes { background-color: #2E7D32; } 
+        .mark-no { background-color: #D32F2F; } 
 
         .modal-buttons { display: flex; padding: 10px; background: white; }
         .modal-buttons button { flex: 1; padding: 12px; margin: 5px; border: none; border-radius: 5px; font-weight: bold; font-size: 14px; font-family: 'Noto Sans Telugu', sans-serif;}
         .btn-close { background-color: #757575; color: white; }
         .btn-share { background-color: #2E7D32; color: white; }
+        .btn-save { background-color: #1976D2; color: white; }
         
         /* చరిత్ర జాబితా */
         .hist-item { border-bottom: 1px solid #ccc; padding: 10px; font-size: 14px; }
@@ -75,18 +94,35 @@
 <body>
 
 <div id="loader">
-    <img src="logo.png" alt="లోడ్ అవుతోంది..." onerror="this.style.display='none'">
+    <img src="./logo.png" id="main-loader-logo" alt="లోడ్ అవుతోంది...">
     <h2 style="color: #D32F2F;">లలిత శ్రీ టైలర్స్</h2>
+</div>
+
+<div id="lock-screen">
+    <div class="lock-box">
+        <img src="./logo.png" style="max-height: 80px; margin-bottom: 10px;">
+        <h2 style="color: #D32F2F; margin-top: 0;">యాప్ లాక్</h2>
+        <p style="font-size: 13px; color: #555;">దయచేసి పాస్‌వర్డ్ (PIN) ఎంటర్ చేయండి</p>
+        <input type="password" id="loginPin" inputmode="numeric" pattern="[0-9]*" placeholder="****" maxlength="8">
+        <button class="btn-unlock" onclick="unlockApp()">అన్‌లాక్ చేయండి</button>
+    </div>
 </div>
 
 <div class="card">
     <div class="header">
-        <button class="btn-history" onclick="showHistory()">పాత బిల్లులు</button>
-        <img src="logo.png" alt="లోగో" onerror="this.style.display='none'">
+        <div class="header-buttons">
+            <button class="btn-history btn-lock-change" onclick="showPinChange()">లాక్ మార్చు</button>
+            <button class="btn-history" onclick="showHistory()">పాత బిల్లులు</button>
+        </div>
+        <img src="./logo.png" id="main-logo" alt="లోగో">
         <div class="shop-name">లలిత శ్రీ టైలర్స్</div>
         <p class="shop-details">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట<br>ఫోన్: 95023 84443</p>
     </div>
 
+    <div class="input-group">
+        <input type="text" id="billSerialNo" class="full-width" placeholder="బిల్లు నంబర్ రాయండి (ఉదా: 101)">
+    </div>
+    
     <div class="input-group">
         <input type="text" id="custName" placeholder="కస్టమర్ పేరు">
         <input type="tel" id="custMobile" placeholder="మొబైల్ నంబర్">
@@ -121,6 +157,10 @@
     </div>
 
     <div id="items-list"></div>
+    
+    <div id="custom-items-list"></div>
+    
+    <button class="btn-add-custom" onclick="addCustomItem()">+ సొంతంగా ఐటమ్ యాడ్ చేయండి</button>
 
     <button class="btn-generate" onclick="generateBill()">బిల్లు తయారు చేయండి</button>
 </div>
@@ -130,14 +170,15 @@
         <div id="receipt-content">
             <div class="receipt-inner">
                 <div style="text-align: center;">
-                    <h2 style="color: #D32F2F; margin: 0;">లలిత శ్రీ టైలర్స్</h2>
+                    <img id="receipt-logo-img" style="max-height: 60px;">
+                    <h2 style="color: #D32F2F; margin: 5px 0;">లలిత శ్రీ టైలర్స్</h2>
                     <p style="margin:0; font-size: 11px;">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట | ఫోన్: 95023 84443</p>
                 </div>
                 <hr>
                 
                 <div class="cust-header">
                     <div style="flex:1;">
-                        <b>బిల్లు నంబర్:</b> <span id="r-serial" style="color:#D32F2F;"></span><br>
+                        <b>బిల్లు నంబర్:</b> <span id="r-serial" style="color:#D32F2F; font-size:16px; font-weight:bold;"></span><br>
                         <b>తేదీ:</b> <span id="r-date"></span><br>
                         <b>పేరు:</b> <span id="r-name"></span><br>
                         <b>మొబైల్:</b> <span id="r-mobile"></span>
@@ -177,24 +218,94 @@
     </div>
 </div>
 
+<div id="pin-modal" class="modal">
+    <div class="modal-content" style="background: white; padding: 20px;">
+        <h3 style="color: #D32F2F; margin-top: 0; text-align: center;">పాస్‌వర్డ్ మార్చండి</h3>
+        <input type="password" id="oldPin" inputmode="numeric" pattern="[0-9]*" placeholder="పాత పాస్‌వర్డ్" style="width: 90%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
+        <input type="password" id="newPin" inputmode="numeric" pattern="[0-9]*" placeholder="కొత్త పాస్‌వర్డ్ (PIN)" style="width: 90%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
+        <input type="password" id="confPin" inputmode="numeric" pattern="[0-9]*" placeholder="మళ్ళీ కొత్త పాస్‌వర్డ్ రాయండి" style="width: 90%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px;">
+        
+        <div class="modal-buttons" style="padding: 0;">
+            <button class="btn-close" onclick="closeModal('pin-modal')">రద్దు చేయండి</button>
+            <button class="btn-save" onclick="saveNewPin()">సేవ్ చేయండి</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // యాప్ ఓపెన్ అయినప్పుడు లోడింగ్ స్క్రీన్ తీసివేయడం
+    let logoBase64 = "";
+    let customItemCount = 0; 
+    
     window.onload = () => {
+        // లోడింగ్ స్క్రీన్ హైడ్ చేయడం
         setTimeout(() => {
             document.getElementById('loader').style.opacity = '0';
             setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
         }, 1500);
         
-        // ఈ రోజు తేదీని డిఫాల్ట్ గా సెట్ చేయడం
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('dateBooked').value = today;
+
+        const img = new Image();
+        img.src = "./logo.png";
+        img.onload = function() {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width; canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            logoBase64 = canvas.toDataURL("image/png");
+            document.getElementById('receipt-logo-img').src = logoBase64;
+        };
     };
+
+    // --- యాప్ లాక్ (App Lock) సిస్టమ్ ---
+    function unlockApp() {
+        const enteredPin = document.getElementById('loginPin').value;
+        const savedPin = localStorage.getItem('appPin') || '4443'; // డిఫాల్ట్ పాస్వర్డ్: 4443
+        
+        if(enteredPin === savedPin) {
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('loginPin').value = '';
+        } else {
+            alert("పాస్‌వర్డ్ తప్పు! దయచేసి మళ్ళీ ప్రయత్నించండి.");
+            document.getElementById('loginPin').value = '';
+        }
+    }
+
+    function showPinChange() {
+        document.getElementById('pin-modal').style.display = 'flex';
+    }
+
+    function saveNewPin() {
+        const oldP = document.getElementById('oldPin').value;
+        const newP = document.getElementById('newPin').value;
+        const confP = document.getElementById('confPin').value;
+        const savedPin = localStorage.getItem('appPin') || '4443';
+
+        if(oldP !== savedPin) {
+            alert("పాత పాస్‌వర్డ్ తప్పు ఎంటర్ చేసారు!");
+            return;
+        }
+        if(newP === "" || newP.length < 4) {
+            alert("కొత్త పాస్‌వర్డ్ కనీసం 4 అంకెలు ఉండాలి!");
+            return;
+        }
+        if(newP !== confP) {
+            alert("కొత్త పాస్‌వర్డ్ రెండు సార్లు ఒకేలా లేదు!");
+            return;
+        }
+        
+        localStorage.setItem('appPin', newP);
+        alert("పాస్‌వర్డ్ విజయవంతంగా మార్చబడింది!");
+        closeModal('pin-modal');
+    }
+    // ------------------------------------
 
     const items = ["పెద్ద షర్ట్", "పెద్ద ఫ్యాంటు", "పెద్ద నిక్కర్", "కుర్తా", "స్కూల్ యూనిఫామ్", "చిన్న షర్టు", "చిన్న ఫ్యాంటు", "చిన్న నిక్కర్", "ఇతర ఆల్టరేషన్స్"];
     const listDiv = document.getElementById('items-list');
     let currentPhotoBase64 = "";
     
-    // ఐటమ్స్ లిస్ట్ సృష్టించడం
+    // డిఫాల్ట్ ఐటమ్స్
     items.forEach((item, index) => {
         listDiv.innerHTML += `
             <div class="item-row">
@@ -211,7 +322,29 @@
         document.getElementById(`rate${index}`).disabled = !isChecked;
     }
 
-    // ఫోటో లోడ్ చేయడం
+    // సొంతంగా ఐటమ్ యాడ్ చేసే ఫంక్షన్
+    function addCustomItem() {
+        const container = document.getElementById('custom-items-list');
+        const cId = customItemCount++;
+        
+        const div = document.createElement('div');
+        div.className = 'item-row';
+        div.innerHTML = `
+            <div class="col-sel"><input type="checkbox" id="c_chk${cId}" checked onchange="toggleCustomItem(${cId})"></div>
+            <div class="col-name"><input type="text" id="c_name${cId}" placeholder="ఐటమ్ పేరు (టైప్ చేయండి)"></div>
+            <div class="col-qty"><input type="number" id="c_qty${cId}" value="1"></div>
+            <div class="col-price"><input type="number" id="c_rate${cId}" placeholder="ధర"></div>
+        `;
+        container.appendChild(div);
+    }
+
+    function toggleCustomItem(id) {
+        const isChecked = document.getElementById(`c_chk${id}`).checked;
+        document.getElementById(`c_name${id}`).disabled = !isChecked;
+        document.getElementById(`c_qty${id}`).disabled = !isChecked;
+        document.getElementById(`c_rate${id}`).disabled = !isChecked;
+    }
+
     function loadPhoto(event) {
         const file = event.target.files[0];
         if (file) {
@@ -223,8 +356,12 @@
     }
 
     function generateBill() {
+        const serialInput = document.getElementById('billSerialNo').value;
+        if (!serialInput) { alert("దయచేసి ముందుగా 'బిల్లు నంబర్' రాయండి!"); return; }
+
         let total = 0; let itemsHtml = ""; let hasItems = false;
 
+        // 1. డిఫాల్ట్ ఐటమ్స్
         items.forEach((item, index) => {
             if (document.getElementById(`chk${index}`).checked) {
                 const q = parseFloat(document.getElementById(`qty${index}`).value) || 0;
@@ -237,22 +374,33 @@
             }
         });
 
+        // 2. సొంతంగా యాడ్ చేసిన (Custom) ఐటమ్స్
+        for(let i=0; i<customItemCount; i++) {
+            const chk = document.getElementById(`c_chk${i}`);
+            if(chk && chk.checked) {
+                const name = document.getElementById(`c_name${i}`).value || "ఇతర ఐటమ్";
+                const q = parseFloat(document.getElementById(`c_qty${i}`).value) || 0;
+                const r = parseFloat(document.getElementById(`c_rate${i}`).value) || 0;
+                const amt = q * r;
+                if(amt > 0) {
+                    hasItems = true; total += amt;
+                    itemsHtml += `<tr><td>${name}</td><td>${q}</td><td>రూ.${amt}</td></tr>`;
+                }
+            }
+        }
+
         if (!hasItems) { alert("దయచేసి కనీసం ఒక ఐటమ్ ఎంచుకోండి."); return; }
 
-        // బిల్లు నంబర్ మరియు ప్రాథమిక వివరాలు
-        const serial = "బిల్లు-" + Date.now().toString().slice(-6);
         const name = document.getElementById('custName').value || "-";
         const mobile = document.getElementById('custMobile').value || "-";
         
-        document.getElementById('r-serial').innerText = serial;
+        document.getElementById('r-serial').innerText = serialInput;
         document.getElementById('r-name').innerText = name;
         document.getElementById('r-mobile').innerText = mobile;
         
         const now = new Date();
-        // తేదీ మరియు సమయం ఫార్మాట్
         document.getElementById('r-date').innerText = now.toLocaleDateString('en-IN') + " " + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
         
-        // కస్టమర్ ఫోటో రశీదులో చూపడం
         const photoImg = document.getElementById('r-photo');
         if (currentPhotoBase64) {
             photoImg.src = currentPhotoBase64;
@@ -264,7 +412,6 @@
         document.getElementById('r-items').innerHTML = itemsHtml;
         document.getElementById('r-total').innerText = total;
 
-        // ఆర్డర్ స్టేటస్ వివరాలు
         document.getElementById('r-s-booked').innerText = formatDate(document.getElementById('dateBooked').value);
         
         const isPaid = document.getElementById('chkPaid').checked;
@@ -277,8 +424,7 @@
         document.getElementById('r-m-del').className = isDel ? "mark-yes" : "mark-no";
         document.getElementById('r-m-del').innerText = isDel ? "✓" : "×";
 
-        // పాత బిల్లుల్లో సేవ్ చేయడం
-        saveToHistory(serial, name, total);
+        saveToHistory(serialInput, name, total);
 
         document.getElementById('receipt-modal').style.display = 'flex';
     }
@@ -291,10 +437,18 @@
 
     function closeModal(id) {
         document.getElementById(id).style.display = 'none';
+        
         if(id === 'receipt-modal') resetForm();
+        
+        if(id === 'pin-modal') {
+            document.getElementById('oldPin').value = '';
+            document.getElementById('newPin').value = '';
+            document.getElementById('confPin').value = '';
+        }
     }
 
     function resetForm() {
+        document.getElementById('billSerialNo').value = "";
         document.getElementById('custName').value = "";
         document.getElementById('custMobile').value = "";
         document.getElementById('chkPaid').checked = false;
@@ -305,16 +459,20 @@
         document.getElementById('photoFileName').innerText = "";
         currentPhotoBase64 = "";
         
+        // డిఫాల్ట్ ఐటమ్స్ రీసెట్
         items.forEach((_, i) => {
             document.getElementById(`chk${i}`).checked = false;
             toggleItem(i);
             document.getElementById(`rate${i}`).value = "";
             document.getElementById(`qty${i}`).value = "1";
         });
+
+        // కొత్తగా యాడ్ చేసిన ఐటమ్స్ అన్నీ తుడిచివేయడం
+        document.getElementById('custom-items-list').innerHTML = "";
+        customItemCount = 0;
     }
 
     async function shareReceipt() {
-        // షేర్ చేయడానికి ముందు అలర్ట్
         alert("గమనిక:\n\nదశ 1: ముందుగా ఈ బిల్లుని మీ ఫోన్ గ్యాలరీ లేదా డ్రైవ్ లో సేవ్ చేయండి.\nదశ 2: ఆ తర్వాత కస్టమర్ కి WhatsApp లో షేర్ చేయండి.");
 
         const receiptDiv = document.getElementById('receipt-content');
@@ -324,7 +482,6 @@
         if (window.plugins && window.plugins.socialsharing) {
             window.plugins.socialsharing.share('మీ బిల్లు ఇక్కడ ఉంది. ధన్యవాదాలు!', 'లలిత శ్రీ టైలర్స్ - బిల్లు', base64Image, null);
         } else {
-            // వెబ్ బ్రౌజర్ ఫాల్-బ్యాక్
             canvas.toBlob(async (blob) => {
                 const file = new File([blob], 'bill.png', { type: 'image/png' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -334,13 +491,10 @@
         }
     }
 
-    // --- పాత బిల్లులు (HISTORY SYSTEM) ---
     function saveToHistory(serial, name, total) {
         let history = JSON.parse(localStorage.getItem("tailorHistory")) || [];
         const date = new Date().toLocaleDateString('en-IN');
-        
         history.unshift({ serial, name, total, date });
-        // మెమరీ కోసం కేవలం 50 బిల్లులు మాత్రమే ఉంచుతుంది
         if (history.length > 50) history.pop();
         localStorage.setItem("tailorHistory", JSON.stringify(history));
     }
@@ -348,13 +502,12 @@
     function showHistory() {
         const list = document.getElementById('history-list');
         let history = JSON.parse(localStorage.getItem("tailorHistory")) || [];
-        
         if (history.length === 0) {
             list.innerHTML = "<p>పాత బిల్లులు ఏమీ లేవు.</p>";
         } else {
             list.innerHTML = history.map(h => 
                 `<div class="hist-item">
-                    <strong>${h.date}</strong> | ${h.serial} <br>
+                    <strong>${h.date}</strong> | బిల్లు నంబర్: ${h.serial} <br>
                     పేరు: ${h.name} | <b>రూ. ${h.total}</b>
                 </div>`
             ).join('');
@@ -363,4 +516,4 @@
     }
 </script>
 </body>
-            </html>
+    </html>
