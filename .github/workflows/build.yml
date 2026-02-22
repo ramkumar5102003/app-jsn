@@ -28,19 +28,19 @@ jobs:
 
       - name: Create Cordova Project
         run: |
-          cordova create app com.lalitha.tailors "Lalitha Sri Tailors"
+          cordova create app com.lalitha.tailors "Lalitha Tailors"
           
           rm -rf app/www/*
           cp index.html app/www/
           cp logo.png app/www/ || true
           cp watermark.png app/www/ || true
           
-          # ఐకాన్ మరియు లోడింగ్ (Splash Screen) సెట్టింగ్స్ యాడ్ చేయడం
           cd app
-          sed -i 's|</widget>|    <icon src="www/logo.png" />\n    <preference name="SplashScreen" value="screen" />\n    <preference name="SplashScreenDelay" value="3000" />\n    <preference name="SplashMaintainAspectRatio" value="true" />\n</widget>|' config.xml
+          # రోబోట్ బొమ్మను పూర్తిగా బ్లాక్ చేయడం (ShowSplashScreen = false)
+          sed -i 's|</widget>|    <icon src="www/logo.png" />\n    <preference name="SplashScreenDelay" value="0" />\n    <preference name="ShowSplashScreen" value="false" />\n    <preference name="FadeSplashScreen" value="false" />\n</widget>|' config.xml
           
           cordova plugin add cordova-plugin-x-socialsharing
-          cordova plugin add cordova-plugin-splashscreen
+          # గమనిక: splashscreen ప్లగిన్ ను తీసివేశాను. దీనివల్లే రోబోట్ బొమ్మ వస్తుంది.
           
           cordova platform add android
           cordova build android
