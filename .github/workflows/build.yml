@@ -28,7 +28,7 @@ jobs:
 
       - name: Create Cordova Project
         run: |
-          cordova create app com.lalitha.tailors "Lalitha Tailors"
+          cordova create app com.lalitha.tailors "Lalitha Sri Tailors"
           
           rm -rf app/www/*
           cp index.html app/www/
