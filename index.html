@@ -159,7 +159,7 @@
                 <div style="text-align: center;">
                     <img id="receipt-logo-img" style="max-height: 60px;">
                     <h2 class="shop-name-stroked" style="margin: 5px 0;">లలిత శ్రీ టైలర్స్</h2>
-                    <p style="margin:0; font-size: 13px; font-weight: bold; color: #D32F2F;">ప్రొప్రైటర్: జొన్నపల్లి సత్తిబాబు</p>
+                    <p style="margin:0; font-size: 13px; font-weight: bold; color: #D32F2F;">ప్రొప్రైటర్: జొన్నపల్లి సత్తిబాబు గారు</p>
                     <p style="margin:0; font-size: 11px;">షాప్ నెం:30, కరాచీ సెంటర్, మండపేట | ఫోన్: 95023 84443</p>
                 </div>
                 <hr>
@@ -418,14 +418,21 @@
 
         document.getElementById('r-s-booked').innerText = formatDate(document.getElementById('dateBooked').value);
         
-        // కొత్త లాజిక్: డబ్బులు మొత్తం ఇస్తేనే '✓', బ్యాలెన్స్ ఉంటే '×' & 'బ్యాలెన్స్ చూడండి'
+        // తేదీ సెట్ చేయడం (తేదీ ఇవ్వకపోతే ఈ రోజు తేదీ ఆటోమేటిక్ గా వస్తుంది)
+        let formattedPaidDate = formatDate(document.getElementById('datePaid').value);
+        if (isPaid && !formattedPaidDate) {
+            const tDate = new Date();
+            formattedPaidDate = ("0" + tDate.getDate()).slice(-2) + "-" + ("0" + (tDate.getMonth()+1)).slice(-2) + "-" + tDate.getFullYear();
+        }
+
+        // కొత్త లాజిక్: డేట్ తో పాటు బ్యాలెన్స్ ఉంటే '×' వస్తుంది
         if (paidAmt >= total && total > 0) {
-            document.getElementById('r-s-paid').innerText = formatDate(document.getElementById('datePaid').value);
+            document.getElementById('r-s-paid').innerText = formattedPaidDate;
             document.getElementById('r-s-paid').style.color = "#2E7D32"; // Green text
             document.getElementById('r-m-paid').className = "mark-yes";
             document.getElementById('r-m-paid').innerText = "✓";
         } else if (paidAmt > 0 && paidAmt < total) {
-            document.getElementById('r-s-paid').innerText = "బ్యాలెన్స్ చూడండి (See Balance)";
+            document.getElementById('r-s-paid').innerText = formattedPaidDate + " (బ్యాలెన్స్ చూడండి)";
             document.getElementById('r-s-paid').style.color = "#D32F2F"; // Red text
             document.getElementById('r-m-paid').className = "mark-no";
             document.getElementById('r-m-paid').innerText = "×";
@@ -531,4 +538,4 @@
     }
 </script>
 </body>
-            </html>
+                </html>
