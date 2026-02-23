@@ -30,17 +30,19 @@ jobs:
         run: |
           cordova create app com.lalitha.tailors "Lalitha Tailors"
           
-          rm -rf app/www/*
+          # ఫైల్స్ కాపీ చేయడం
           cp index.html app/www/
           cp logo.png app/www/ || true
           cp watermark.png app/www/ || true
           
+          # Android 12+ కోసం మెయిన్ ఫోల్డర్ లో కూడా లోగో పెట్టాలి
+          cp logo.png app/ || true
+          
           cd app
-          # రోబోట్ బొమ్మను పూర్తిగా బ్లాక్ చేయడం (ShowSplashScreen = false)
-          sed -i 's|</widget>|    <icon src="www/logo.png" />\n    <preference name="SplashScreenDelay" value="0" />\n    <preference name="ShowSplashScreen" value="false" />\n    <preference name="FadeSplashScreen" value="false" />\n</widget>|' config.xml
+          # రోబోట్ బొమ్మను పూర్తిగా బ్లాక్ చేసి, ఆండ్రాయిడ్ కి డైరెక్ట్ గా మీ లోగోని సెట్ చేయడం
+          sed -i 's|</widget>|    <icon src="logo.png" />\n    <preference name="AndroidWindowSplashScreenAnimatedIcon" value="logo.png" />\n    <preference name="AndroidWindowSplashScreenBackground" value="#E1F5FE" />\n    <preference name="SplashScreenDelay" value="0" />\n</widget>|' config.xml
           
           cordova plugin add cordova-plugin-x-socialsharing
-          # గమనిక: splashscreen ప్లగిన్ ను తీసివేశాను. దీనివల్లే రోబోట్ బొమ్మ వస్తుంది.
           
           cordova platform add android
           cordova build android
