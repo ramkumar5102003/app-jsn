@@ -209,21 +209,16 @@
 
 <div id="share-modal" class="modal">
     <div class="modal-content" style="background: white; padding: 20px; text-align: center;">
-        <h3 style="color: #0288D1; margin-top: 0;">వాట్సాప్ షేర్</h3>
-        <p style="margin-bottom: 15px; font-size: 15px;">రశీదును ఏ నంబర్‌కి పంపాలి?</p>
+        <h3 style="color: #0288D1; margin-top: 0; margin-bottom: 5px;">బిల్లు షేర్ చేయండి</h3>
+        <p style="margin-top: 0; margin-bottom: 15px; font-size: 13px; color:#D32F2F;">గమనిక: బొమ్మ (Image) పంపడానికి కస్టమర్ వాట్సాప్ ని లిస్ట్ లో మీరే సెలెక్ట్ చేయాలి.</p>
 
-        <button id="btn-same-num" class="btn-share" style="width: 100%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 5px; font-size: 14px; font-weight: bold; cursor: pointer; font-family: inherit;" onclick="shareToSameNumber()">
-            కస్టమర్ నంబర్‌కు (<span id="disp-cust-mobile"></span>)
+        <button class="btn-share" style="width: 100%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; font-family: inherit;" onclick="shareToWhatsAppPicker()">
+            WhatsApp లో పంపండి (బొమ్మ + టెక్స్ట్)
         </button>
 
-        <button class="btn-edit" style="width: 100%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 5px; font-size: 14px; font-weight: bold; cursor: pointer; font-family: inherit;" onclick="showDiffNumberBox()">
-            వేరే నంబర్‌కి పంపండి
+        <button class="btn-edit" style="width: 100%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; font-family: inherit; background-color: #1976D2;" onclick="shareToSystem()">
+            ఇతర యాప్స్ లో పంపండి
         </button>
-
-        <div id="diff-num-box" style="display: none; background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd;">
-            <input type="tel" id="diffMobile" placeholder="10 అంకెల మొబైల్ నంబర్" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" style="width: 90%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; text-align: center; font-size: 16px; font-family: inherit;">
-            <button class="btn-save" style="width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; font-family: inherit;" onclick="shareToDiffNumber()">ఈ నంబర్‌కు షేర్ చేయండి</button>
-        </div>
 
         <button class="btn-close" style="width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; font-family: inherit;" onclick="closeModal('share-modal')">క్యాన్సిల్ (Cancel)</button>
     </div>
@@ -516,80 +511,61 @@
         customItemCount = 0;
     }
 
-    // --- కొత్త షేరింగ్ సిస్టమ్ --- //
+    // --- కొత్త షేరింగ్ సిస్టమ్ ---
 
     function openShareOptions() {
-        const custNum = document.getElementById('custMobile').value.trim();
-        const btnSame = document.getElementById('btn-same-num');
-        const dispCust = document.getElementById('disp-cust-mobile');
-
-        if (custNum && custNum.length === 10) {
-            dispCust.innerText = custNum;
-            btnSame.style.display = 'block';
-        } else {
-            btnSame.style.display = 'none'; // కస్టమర్ నంబర్ లేకపోతే ఆ బటన్ కనపడదు
-        }
-
-        document.getElementById('diff-num-box').style.display = 'none';
-        document.getElementById('diffMobile').value = '';
         document.getElementById('share-modal').style.display = 'flex';
     }
 
-    function showDiffNumberBox() {
-        document.getElementById('diff-num-box').style.display = 'block';
-    }
-
-    function shareToSameNumber() {
-        const num = document.getElementById('custMobile').value.trim();
-        executeWhatsAppShare(num);
-    }
-
-    function shareToDiffNumber() {
-        const num = document.getElementById('diffMobile').value.trim();
-        if (num.length !== 10) {
-            alert("దయచేసి సరైన 10 అంకెల నంబర్ ఎంటర్ చేయండి!");
-            return;
-        }
-        executeWhatsAppShare(num);
-    }
-
-    async function executeWhatsAppShare(phone) {
-        // ముందుగా మోడల్ క్లోజ్ చేయడం
+    async function shareToWhatsAppPicker() {
         closeModal('share-modal');
-
-        let waNumber = "91" + phone;
         const receiptDiv = document.getElementById('receipt-content');
         const canvas = await html2canvas(receiptDiv, { scale: 2, useCORS: true });
         const base64Image = canvas.toDataURL("image/png");
         const msg = 'లలిత శ్రీ టైలర్స్ - మీ బిల్లు ఇక్కడ ఉంది. ధన్యవాదాలు!';
 
         if (window.plugins && window.plugins.socialsharing) {
-            // కచ్చితంగా ఆ నంబర్ కి WhatsApp ఓపెన్ అవుతుంది
-            window.plugins.socialsharing.shareViaWhatsAppToReceiver(
-                waNumber, 
+            // ఇది నేరుగా వాట్సాప్ ఓపెన్ చేస్తుంది, ఇమేజ్ కచ్చితంగా వెళ్తుంది
+            window.plugins.socialsharing.shareViaWhatsApp(
                 msg, 
                 base64Image, 
                 null, 
-                function() { console.log("WhatsApp Direct Success"); }, 
+                function() { console.log("WhatsApp Share Success"); }, 
                 function(err) {
-                    // ఒకవేళ ఆ నంబర్ కి వాట్సాప్ లేకపోతే మామూలు షేర్ ఓపెన్ అవుతుంది
-                    window.plugins.socialsharing.share(msg, 'లలిత శ్రీ టైలర్స్ - బిల్లు', base64Image, null);
+                    alert("WhatsApp ఓపెన్ అవ్వలేదు. దయచేసి 'ఇతర యాప్స్' ద్వారా షేర్ చేయండి.");
                 }
             );
         } else {
-            // వెబ్ బ్రౌజర్ ఫాల్-బ్యాక్
-            canvas.toBlob(async (blob) => {
-                const file = new File([blob], 'bill.png', { type: 'image/png' });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ files: [file], title: 'బిల్లు', text: msg });
-                } else {
-                    alert("దయచేసి ముందుగా సేవ్ చేసి షేర్ చేయండి.");
-                }
-            });
+            fallbackShare(canvas, msg);
         }
     }
 
-    // --- పాత బిల్లులు (History System) --- //
+    async function shareToSystem() {
+        closeModal('share-modal');
+        const receiptDiv = document.getElementById('receipt-content');
+        const canvas = await html2canvas(receiptDiv, { scale: 2, useCORS: true });
+        const base64Image = canvas.toDataURL("image/png");
+        const msg = 'లలిత శ్రీ టైలర్స్ - మీ బిల్లు ఇక్కడ ఉంది. ధన్యవాదాలు!';
+
+        if (window.plugins && window.plugins.socialsharing) {
+            window.plugins.socialsharing.share(msg, 'లలిత శ్రీ టైలర్స్ - బిల్లు', base64Image, null);
+        } else {
+            fallbackShare(canvas, msg);
+        }
+    }
+
+    function fallbackShare(canvas, msg) {
+        canvas.toBlob(async (blob) => {
+            const file = new File([blob], 'bill.png', { type: 'image/png' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file], title: 'బిల్లు', text: msg });
+            } else {
+                alert("దయచేసి ముందుగా సేవ్ చేసి షేర్ చేయండి.");
+            }
+        });
+    }
+
+    // --- పాత బిల్లులు (History System) ---
     function saveToHistory(serial, name, total) {
         let history = JSON.parse(localStorage.getItem("tailorHistory")) || [];
         const date = new Date().toLocaleDateString('en-IN');
